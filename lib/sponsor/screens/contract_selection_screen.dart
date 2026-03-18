@@ -554,10 +554,9 @@ class _ContractSelectionScreenState extends State<ContractSelectionScreen> {
               });
 
               try {
-
                 final supabase = Supabase.instance.client;
 
-                // 🔐 AUTH GATE (NEW)
+                // 🔐 AUTH GATE
                 final user = supabase.auth.currentUser;
                 if (user == null) {
                   await launchUrl(
@@ -590,6 +589,25 @@ class _ContractSelectionScreenState extends State<ContractSelectionScreen> {
                       : {},
                 );
 
+                // 🔥 HANDLE FUNCTION ERRORS CLEANLY
+                if (response.status != 200) {
+                  final data = response.data;
+
+                  final code = data?['code'];
+                  final message = data?['error'] ?? 'Something went wrong';
+
+                  if (code == 'ALREADY_ACTIVE') {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text("You already have an active sponsorship"),
+                      ),
+                    );
+                    return;
+                  }
+
+                  throw Exception(message);
+                }
+
                 final checkoutUrl = response.data['checkout_url'];
 
                 if (checkoutUrl == null) {
@@ -598,18 +616,16 @@ class _ContractSelectionScreenState extends State<ContractSelectionScreen> {
 
                 await launchUrl(
                   Uri.parse(checkoutUrl),
-                  mode: LaunchMode.externalApplication, // ✅ web-safe
+                  mode: LaunchMode.externalApplication,
                 );
 
               } catch (e) {
-
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
-                    content: Text("Payment error: $e"),
+                    content: Text("Payment error"),
                   ),
                 );
-
-              } finally {
+              }finally {
 
                 if (mounted) {
                   setState(() {
