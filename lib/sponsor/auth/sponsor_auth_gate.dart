@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class SponsorAuthGate extends StatefulWidget {
   final VoidCallback onAuthenticated;
@@ -14,99 +15,34 @@ class SponsorAuthGate extends StatefulWidget {
 }
 
 class _SponsorAuthGateState extends State<SponsorAuthGate> {
-  final _emailController = TextEditingController();
-  bool _loading = false;
-
-  Future<void> _sendMagicLink() async {
-    final email = _emailController.text.trim();
-
-    if (email.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Enter your email")),
-      );
-      return;
-    }
-
-    setState(() => _loading = true);
-
-    try {
-      await Supabase.instance.client.auth.signInWithOtp(
-        email: email,
-      );
-
-      if (!mounted) return;
-
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Check your email to continue")),
-      );
-
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Error: $e")),
-      );
-    }
-
-    setState(() => _loading = false);
-  }
-
   @override
   void initState() {
     super.initState();
+    _checkAuth();
+  }
 
-    Supabase.instance.client.auth.onAuthStateChange.listen((event) {
-      if (event.session != null) {
-        widget.onAuthenticated();
-      }
-    });
+  Future<void> _checkAuth() async {
+    final session = Supabase.instance.client.auth.currentSession;
+
+    if (session != null) {
+      // ✅ Already logged in → continue immediately
+      widget.onAuthenticated();
+    } else {
+      // ❌ Not logged in → send to website login
+      await launchUrl(
+        Uri.parse('https://www.thematesapp.com/login'),
+        mode: LaunchMode.externalApplication,
+      );
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: const Color(0xFFF8FAFC),
+    // 🔄 Simple loading state while checking auth
+    return const Scaffold(
+      backgroundColor: Color(0xFFF8FAFC),
       body: Center(
-        child: Container(
-          padding: const EdgeInsets.all(28),
-          width: 420,
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(22),
-            border: Border.all(color: const Color(0xFFE2E8F0)),
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const Text(
-                'Continue to Secure Your Placement',
-                style: TextStyle(fontSize: 22, fontWeight: FontWeight.w900),
-              ),
-              const SizedBox(height: 10),
-              const Text(
-                'Enter your email to continue. This saves your sponsorship setup and unlocks checkout.',
-                textAlign: TextAlign.center,
-                style: TextStyle(color: Color(0xFF6B7280)),
-              ),
-              const SizedBox(height: 20),
-              TextField(
-                controller: _emailController,
-                decoration: const InputDecoration(
-                  hintText: 'Email address',
-                  border: OutlineInputBorder(),
-                ),
-              ),
-              const SizedBox(height: 16),
-              SizedBox(
-                width: double.infinity,
-                child: ElevatedButton(
-                  onPressed: _loading ? null : _sendMagicLink,
-                  child: _loading
-                      ? const CircularProgressIndicator()
-                      : const Text('Continue'),
-                ),
-              ),
-            ],
-          ),
-        ),
+        child: CircularProgressIndicator(),
       ),
     );
   }
