@@ -5,6 +5,7 @@ import 'package:sponsor_flow/sponsor/legal/sponsor_advertising_policy_screen.dar
 import 'package:sponsor_flow/sponsor/legal/sponsor_privacy_notice_screen.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
+import '../widgets/sponsor_layout.dart';
 import '../auth/sponsor_auth_gate.dart';
 
 class ContractSelectionScreen extends StatefulWidget {
@@ -464,9 +465,10 @@ class _ContractSelectionScreenState extends State<ContractSelectionScreen> {
         title: const Text("Select Contract"),
       ),
 
-      body: ListView(
-        padding: const EdgeInsets.fromLTRB(16, 16, 16, 24),
-        children: [
+      body: SafeArea(
+      child: SponsorLayout(
+      child: ListView(
+      children: [
 
           Text(
             "Lock in your sponsorship price",
@@ -522,7 +524,9 @@ class _ContractSelectionScreenState extends State<ContractSelectionScreen> {
           const SizedBox(height: 24),
           _legalSection(),
           const SizedBox(height: 24),
-        ],
+      ],
+      ),
+      ),
       ),
 
       bottomNavigationBar: Padding(

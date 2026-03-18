@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import '../widgets/sponsor_layout.dart';
 
 class SponsorActivitySelectionScreen extends StatefulWidget {
   final Set<String> initialSelected;
@@ -195,9 +196,10 @@ class _SponsorActivitySelectionScreenState
       ),
       body: _loading
           ? const Center(child: CircularProgressIndicator())
-          : ListView(
-        padding: const EdgeInsets.all(16),
-        children: [
+          : SafeArea(
+      child: SponsorLayout(
+      child: ListView(
+      children: [
           const Text(
             'Choose one or more activities that your business would like to sponsor.',
             style: TextStyle(
@@ -262,7 +264,9 @@ class _SponsorActivitySelectionScreenState
           ),
 
           const SizedBox(height: 80),
-        ],
+      ],
+      ),
+      ),
       ),
     );
   }

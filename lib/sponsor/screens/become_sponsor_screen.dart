@@ -12,6 +12,7 @@ import '../widgets/sponsor_map_widget.dart';
 import '../services/sponsor_pricing_service.dart';
 
 import 'contract_selection_screen.dart';
+import '../widgets/sponsor_layout.dart';
 
 class BecomeSponsorScreen extends StatefulWidget {
   const BecomeSponsorScreen({super.key});
@@ -2654,9 +2655,11 @@ class _BecomeSponsorScreenState extends State<BecomeSponsorScreen> {
     bottom: true,
     child: _locLoading
     ? const Center(child: CircularProgressIndicator())
-        : ListView(
-        padding: const EdgeInsets.all(_pagePad),
-        children: [
+        : SafeArea(
+    child: SponsorLayout(
+    padding: const EdgeInsets.all(_pagePad),
+    child: ListView(
+    children: [
           _heroHeader(),
           const SizedBox(height: _sectionGap),
 
@@ -2777,8 +2780,10 @@ class _BecomeSponsorScreenState extends State<BecomeSponsorScreen> {
             ),
           ),
           const SizedBox(height: 14),
-        ],
-      ),
+    ],
+    ),
+    ),
+    ),
     ),
     );
   }
