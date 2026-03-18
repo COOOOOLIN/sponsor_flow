@@ -560,15 +560,9 @@ class _ContractSelectionScreenState extends State<ContractSelectionScreen> {
                 // 🔐 AUTH GATE (NEW)
                 final user = supabase.auth.currentUser;
                 if (user == null) {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => SponsorAuthGate(
-                        onAuthenticated: () {
-                          Navigator.pop(context);
-                        },
-                      ),
-                    ),
+                  await launchUrl(
+                    Uri.parse('https://www.thematesapp.com/login'),
+                    mode: LaunchMode.externalApplication,
                   );
 
                   setState(() => _loading = false);
