@@ -2651,140 +2651,122 @@ class _BecomeSponsorScreenState extends State<BecomeSponsorScreen> {
           const SizedBox(width: 6),
         ],
       ),
-    body: SafeArea(
-    bottom: true,
-    child: _locLoading
-    ? const Center(child: CircularProgressIndicator())
-        : SafeArea(
-    child: SponsorLayout(
-    padding: const EdgeInsets.all(_pagePad),
-    child: ListView(
-    children: [
-          _heroHeader(),
-          const SizedBox(height: _sectionGap),
+        body: SafeArea(
+          bottom: true,
+          child: _locLoading
+              ? const Center(child: CircularProgressIndicator())
+              : SponsorLayout(
+            padding: const EdgeInsets.all(_pagePad),
+            child: ListView(
+              children: [
+                _heroHeader(),
+                const SizedBox(height: _sectionGap),
 
-          // -------------------------
-          // YOUR REACH
-          // -------------------------
-          _sectionTitle(
-            'Your reach',
-            icon: Icons.radar_outlined,
-            subtitle:
-            'Pick a coverage tier and fine-tune the local radius. Your map pin is the reference point.',
-          ),
-          const SizedBox(height: 24),
-          _coverageToggle(),
-          const SizedBox(height: 24),
-          _sponsorTypeToggle(),
-          const SizedBox(height: 24),
+                // -------------------------
+                // YOUR REACH
+                // -------------------------
+                _sectionTitle(
+                  'Your reach',
+                  icon: Icons.radar_outlined,
+                  subtitle:
+                  'Pick a coverage tier and fine-tune the local radius. Your map pin is the reference point.',
+                ),
+                const SizedBox(height: 24),
+                _coverageToggle(),
+                const SizedBox(height: 24),
+                _sponsorTypeToggle(),
+                const SizedBox(height: 24),
 
-          // -------------------------
-          // ACTIVITIES
-          // -------------------------
-          _sectionTitle(
-            'Sponsored activities',
-            icon: Icons.local_activity_outlined,
-            subtitle:
-            'Select what you want to sponsor so your ads appear in the right places.',
-          ),
-          const SizedBox(height: 24),
-          _activitySelectorCard(),
-          const SizedBox(height: _sectionGap),
+                // -------------------------
+                // ACTIVITIES
+                // -------------------------
+                _sectionTitle(
+                  'Sponsored activities',
+                  icon: Icons.local_activity_outlined,
+                  subtitle:
+                  'Select what you want to sponsor so your ads appear in the right places.',
+                ),
+                const SizedBox(height: 24),
+                _activitySelectorCard(),
+                const SizedBox(height: _sectionGap),
 
-          // -------------------------
-          // MAP
-          // -------------------------
-// -------------------------
-// MAP / STATE / NATIONAL
-// -------------------------
+                // -------------------------
+                // MAP / STATE / NATIONAL
+                // -------------------------
+                if (_coverageType == 'local') ...[
+                  _sectionTitle(
+                    'Map',
+                    icon: Icons.map_outlined,
+                    subtitle:
+                    'Place your advertising pin. The circle shows your radius for local coverage.',
+                  ),
+                  const SizedBox(height: _sectionGap),
+                  _radiusSlider(),
+                  const SizedBox(height: 24),
+                  _mapCard(canShowMap: canShowMap),
+                ],
 
-          if (_coverageType == 'local') ...[
+                if (_coverageType == 'state') ...[
+                  _sectionTitle(
+                    'Select states',
+                    icon: Icons.map_outlined,
+                    subtitle:
+                    'Choose which states your sponsorship will appear in.',
+                  ),
+                  const SizedBox(height: 24),
+                  _stateSelector(),
+                ],
 
-            _sectionTitle(
-              'Map',
-              icon: Icons.map_outlined,
-              subtitle:
-              'Place your advertising pin. The circle shows your radius for local coverage.',
-            ),
+                if (_coverageType == 'national') ...[
+                  _sectionTitle(
+                    'National coverage',
+                    icon: Icons.public,
+                    subtitle:
+                    'Your sponsorship will appear across the entire country.',
+                  ),
+                  const SizedBox(height: 24),
+                  _nationalCard(),
+                ],
 
-            const SizedBox(height: _sectionGap),
+                // -------------------------
+                // PRICING
+                // -------------------------
+                const SizedBox(height: _sectionGap),
+                _sectionTitle(
+                  'Pricing preview',
+                  icon: Icons.price_check_outlined,
+                  subtitle:
+                  'A live preview based on location, coverage, and selected activities.',
+                ),
+                const SizedBox(height: 24),
+                _pricingCard(),
+                const SizedBox(height: _sectionGap),
 
-            _radiusSlider(),
-            const SizedBox(height: 24),
-            _mapCard(canShowMap: canShowMap),
+                // -------------------------
+                // CTA
+                // -------------------------
+                Padding(
+                  padding: const EdgeInsets.only(top: 8),
+                  child: _continueCta(),
+                ),
+                _ctaHint(),
+                const SizedBox(height: 24),
 
-          ],
-
-          if (_coverageType == 'state') ...[
-
-            _sectionTitle(
-              'Select states',
-              icon: Icons.map_outlined,
-              subtitle:
-              'Choose which states your sponsorship will appear in.',
-            ),
-
-            const SizedBox(height: 24),
-
-            _stateSelector(),
-
-          ],
-
-          if (_coverageType == 'national') ...[
-
-            _sectionTitle(
-              'National coverage',
-              icon: Icons.public,
-              subtitle:
-              'Your sponsorship will appear across the entire country.',
-            ),
-
-            const SizedBox(height: 24),
-
-            _nationalCard(),
-
-          ],
-
-          // -------------------------
-          // PRICING
-          // -------------------------
-          const SizedBox(height: _sectionGap),
-          _sectionTitle(
-            'Pricing preview',
-            icon: Icons.price_check_outlined,
-            subtitle:
-            'A live preview based on location, coverage, and selected activities.',
-          ),
-          const SizedBox(height: 24),
-          _pricingCard(),
-          const SizedBox(height: _sectionGap),
-
-          // -------------------------
-          // CTA
-          // -------------------------
-          Padding(
-            padding: const EdgeInsets.only(top: 8),
-            child: _continueCta(),
-          ),
-          _ctaHint(),
-          const SizedBox(height: 24),
-
-          // Footer spacing / subtle brand line
-          Center(
-            child: Text(
-              'Powered by The Mates App Sponsorship Engine',
-              style: _tt.bodySmall?.copyWith(
-                color: _cs.onSurfaceVariant,
-                fontWeight: FontWeight.w600,
-              ),
+                // Footer
+                Center(
+                  child: Text(
+                    'Powered by The Mates App Sponsorship Engine',
+                    style: _tt.bodySmall?.copyWith(
+                      color: _cs.onSurfaceVariant,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 14),
+              ],
             ),
           ),
-          const SizedBox(height: 14),
-    ],
-    ),
-    ),
-    ),
-    ),
+        )
     );
   }
 }
